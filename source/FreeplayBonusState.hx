@@ -399,7 +399,7 @@ class FreeplayBonus extends MusicBeatState
 				colorTween.cancel();
 			}
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new FreeplaySelect());
+			MusicBeatState.switchState(new FreeplaySelectState());
 		}
 
 		if(ctrl)
@@ -471,13 +471,13 @@ class FreeplayBonus extends MusicBeatState
 		for (i in music)
 		{
 			var inst = Paths.inst(i);
-			if (Paths.doesSoundAssetExist(inst))
+			if (Paths.FileSystem.exists(inst))
 			{
 				FlxG.sound.cache(inst);
 			}
 	
 			var voices = Paths.voices(i);
-			if (Paths.doesSoundAssetExist(voices))
+			if (Paths.FileSystem.exists(voices))
 			{
 				FlxG.sound.cache(voices);
 			}
