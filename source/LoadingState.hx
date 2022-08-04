@@ -8,8 +8,12 @@ import flixel.FlxSprite;
 import flixel.graphics.frames.FlxAtlasFrames;
 import flixel.util.FlxTimer;
 import flixel.math.FlxMath;
-
+import flixel.addons.transition.TransitionData;
+import flixel.addons.transition.FlxTransitionableState;
 import openfl.utils.Assets;
+import flixel.math.FlxPoint;
+import flixel.util.FlxColor;
+import flixel.math.FlxRect;
 import lime.utils.Assets as LimeAssets;
 import lime.utils.AssetLibrary;
 import lime.utils.AssetManifest;
@@ -46,7 +50,7 @@ class LoadingState extends MusicBeatState
 	{
 		var bg:FlxSprite = new FlxSprite(0, 0).makeGraphic(FlxG.width, FlxG.height, 0xffcaff4d);
 		add(bg);
-		funkay = new FlxSprite(0, 0).loadGraphic(Paths.getPath('images/funkay.png', IMAGE));
+		funkay = new FlxSprite(0, 0).loadGraphic(Paths.getPath('images/Loading_screen.png', IMAGE));
 		funkay.setGraphicSize(0, FlxG.height);
 		funkay.updateHitbox();
 		funkay.antialiasing = ClientPrefs.globalAntialiasing;
@@ -54,7 +58,7 @@ class LoadingState extends MusicBeatState
 		funkay.scrollFactor.set();
 		funkay.screenCenter();
 
-		loadBar = new FlxSprite(0, FlxG.height - 20).makeGraphic(FlxG.width, 10, 0xffff16d2);
+		loadBar = new FlxSprite(0, FlxG.height - 20).makeGraphic(FlxG.width, 10, 255255255);//0xffff16d2);
 		loadBar.screenCenter(X);
 		loadBar.antialiasing = ClientPrefs.globalAntialiasing;
 		add(loadBar);
@@ -75,7 +79,7 @@ class LoadingState extends MusicBeatState
 					checkLibrary(directory);
 				}
 
-				var fadeTime = 0.5;
+				var fadeTime = 0.1;
 				FlxG.camera.fade(FlxG.camera.bgColor, fadeTime, true);
 				new FlxTimer().start(fadeTime + MIN_TIME, function(_) introComplete());
 			}
@@ -148,6 +152,20 @@ class LoadingState extends MusicBeatState
 	inline static public function loadAndSwitchState(target:FlxState, stopMusic = false)
 	{
 		MusicBeatState.switchState(getNextState(target, stopMusic));
+	}
+
+	inline static public function switchState(target:FlxState)
+	{
+
+        trace('Loading State Target = ' + target);
+		//giving me info on the state its loading -thatblockboi
+
+		//FlxTransitionableState.skipNextTransIn = true;
+		FlxG.switchState(target);
+
+		FlxTransitionableState.defaultTransOut = new TransitionData(TILES, FlxColor.BLACK, 0.7, new FlxPoint(0, 1),
+		new FlxRect(-300, -300, FlxG.width * 1.8, FlxG.height * 1.8));
+
 	}
 	
 	static function getNextState(target:FlxState, stopMusic = false):FlxState
