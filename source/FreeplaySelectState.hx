@@ -179,7 +179,7 @@ class FreeplaySelectState extends MusicBeatState
 		    case 'story':
 				MusicBeatState.switchState(new FreeplayState());
 			case 'bonus':
-				MusicBeatState.switchState(new FreeplayState());
+				MusicBeatState.switchState(new FreeplayBonusState());
 			case 'nightmare':
 				MusicBeatState.switchState(new FreeplayState());
 	}
