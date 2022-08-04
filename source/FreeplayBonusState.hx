@@ -70,7 +70,6 @@ class FreeplayBonus extends MusicBeatState
 		Debug = true;
 		#end
 
-		cache(); //so it caches songs
 
 		for (i in 0...WeekData.weeksList.length) {
 			if(weekIsLocked(WeekData.weeksList[i])) continue;
@@ -399,7 +398,7 @@ class FreeplayBonus extends MusicBeatState
 				colorTween.cancel();
 			}
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			MusicBeatState.switchState(new FreeplaySelect());
+			MusicBeatState.switchState(new FreeplaySelectState());
 		}
 
 		if(ctrl)
