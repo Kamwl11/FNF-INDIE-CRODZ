@@ -177,11 +177,11 @@ class FreeplaySelectState extends MusicBeatState
 		switch (daChoice)
 		{
 		    case 'story':
-				MusicBeatState.switchState(new FreeplayBonusState());
+				LoadingState.loadAndSwitchState(new FreeplayBonusState());
 			case 'bonus':
-				MusicBeatState.switchState(new FreeplayBonusState());
+				LoadingState.loadAndSwitchState(new FreeplayBonusState());
 			case 'nightmare':
-				MusicBeatState.switchState(new FreeplayBonusState());
+				LoadingState.loadAndSwitchState(new FreeplayBonusState());
 	}
 }
 	public function changeItem(huh:Int = 0)
