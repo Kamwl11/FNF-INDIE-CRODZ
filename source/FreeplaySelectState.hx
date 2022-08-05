@@ -1,221 +1,177 @@
-package;
+package options;
 
 #if desktop
 import Discord.DiscordClient;
 #end
+import flash.text.TextField;
 import flixel.FlxG;
-import flixel.FlxObject;
 import flixel.FlxSprite;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.effects.FlxFlicker;
-import flixel.graphics.frames.FlxAtlasFrames;
+import flixel.addons.display.FlxGridOverlay;
 import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.text.FlxText;
 import flixel.math.FlxMath;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
+import lime.utils.Assets;
+import flixel.FlxSubState;
+import flash.text.TextField;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.util.FlxSave;
+import haxe.Json;
 import flixel.tweens.FlxEase;
 import flixel.tweens.FlxTween;
-import flixel.util.FlxColor;
-import lime.app.Application;
+import flixel.util.FlxTimer;
+import flixel.input.keyboard.FlxKey;
+import flixel.graphics.FlxGraphic;
+import Controls;
+
+import GameJolt.GameJoltAPI;
+import GameJolt;
 
 using StringTools;
 
-class FreeplaySelectState extends MusicBeatState
+class OptionsState extends MusicBeatState
 {
-	public static var curSelected:Int = 0;
-	public static var curSelectedStory:Bool;
-	public static var curSelectedBonus:Bool;
-	public static var curSelectedNightmare:Bool;
-	var optionShit:Array<String> = ['story', 'bonus', 'nightmare'];
-	var menuItems:FlxTypedGroup<FlxSprite>;
-	var story:FlxSprite;
-	var bonus:FlxSprite;
-	var nightmare:FlxSprite;
-	var storySplash:FlxSprite;
-	var bonusSplash:FlxSprite;
-	var nightmareSplash:FlxSprite;
-	var bg:FlxSprite;	
+	var options:Array<String> = ['Controls', 'Graphics', 'Visuals and UI', 'Gameplay', 'Gamejolt', 'Adjust Delay and Combo'];
+	private var grpOptions:FlxTypedGroup<Alphabet>;
+	private static var curSelected:Int = 0;
+	public static var menuBG:FlxSprite;
 
-	override function create()
-	{
+	function openSelectedSubstate(label:String) {
+		switch(label) {
+			/*
+			case 'Note Colors':
+				persistentUpdate = false;
+				openSubState(new options.NotesSubState());
+			*/
+			#if (desktop || html5)
+			case 'Controls':
+				persistentUpdate = false;
+				openSubState(new options.ControlsSubState());
+			#else
+			case 'Controls':
+				persistentUpdate = false;
+				openSubState(new options.PreferencesSubstate());
+			#end
+			case 'Graphics':
+				persistentUpdate = false;
+				openSubState(new options.GraphicsSettingsSubState());
+			case 'Visuals and UI':
+				persistentUpdate = false;
+				openSubState(new options.VisualsUISubState());
+			case 'Gameplay':
+				persistentUpdate = false;
+				openSubState(new options.GameplaySettingsSubState());
+			case 'Gamejolt':
+				persistentUpdate = false;
+				LoadingState.loadAndSwitchState(new GameJoltLogin());
+			case 'Adjust Delay and Combo':
+				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
+		}
+	}
+
+	override function create() {
 		#if desktop
-		// Updating Discord Rich Presence
-		DiscordClient.changePresence("In the Menus", null);
+		DiscordClient.changePresence("Options Menu", null);
 		#end
 
-		transIn = FlxTransitionableState.defaultTransIn;
-		transOut = FlxTransitionableState.defaultTransOut;
+        FlxG.sound.music.stop();
+	    FlxG.sound.playMusic(Paths.music('settin'));
 
 		persistentUpdate = persistentDraw = true;
 
-		bg = new FlxSprite().loadGraphic(Paths.image('menuBG'));
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
+		bg.color = 0xFFea71fd;
+		bg.updateHitbox();
+
+		bg.screenCenter();
 		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		add(bg);
 
-		menuItems = new FlxTypedGroup<FlxSprite>();
-		add(menuItems);
+		grpOptions = new FlxTypedGroup<Alphabet>();
+		add(grpOptions);
 
-		story = new FlxSprite(-100, -400).loadGraphic(Paths.image('freeplayselect/story'));
-		menuItems.add(story);
-		story.scrollFactor.set();
-		story.antialiasing = ClientPrefs.globalAntialiasing;
-		story.setGraphicSize(Std.int(story.width * 0.7));
-		story.y += 230;		
-		story.x -= 200;
-		story.alpha = 0.60;
-
-		bonus = new FlxSprite(-100, -400).loadGraphic(Paths.image('freeplayselect/bonus'));
-		menuItems.add(bonus);
-		bonus.scrollFactor.set();
-		bonus.antialiasing = ClientPrefs.globalAntialiasing;
-		bonus.setGraphicSize(Std.int(bonus.width * 0.7));
-		bonus.y += 230;		
-		bonus.x -= 200;
-		bonus.alpha = 0.60;
-
-		nightmare = new FlxSprite(-100, -400).loadGraphic(Paths.image('freeplayselect/nightmare'));
-		menuItems.add(nightmare);
-		nightmare.scrollFactor.set();
-		nightmare.antialiasing = ClientPrefs.globalAntialiasing;
-		nightmare.setGraphicSize(Std.int(nightmare.width * 0.7));
-		nightmare.y += 230;		
-		nightmare.x -= 200;
-		nightmare.alpha = 0.60;
-
-		storySplash = new FlxSprite(-100, -400).loadGraphic(Paths.image('freeplayselect/storySplash'));
-		storySplash.scrollFactor.set();
-		storySplash.antialiasing = ClientPrefs.globalAntialiasing;
-		storySplash.setGraphicSize(Std.int(storySplash.width * 0.7));
-		storySplash.y += 230;
-		storySplash.x -= 200;
-		storySplash.alpha = 0;
-		add(storySplash);	
-	
-		bonusSplash = new FlxSprite(-100, -400).loadGraphic(Paths.image('freeplayselect/bonusSplash'));
-		bonusSplash.scrollFactor.set();
-		bonusSplash.antialiasing = ClientPrefs.globalAntialiasing;
-		bonusSplash.setGraphicSize(Std.int(bonusSplash.width * 0.7));
-		bonusSplash.y += 230;
-		bonusSplash.x -= 200;
-		bonusSplash.alpha = 0;
-		add(bonusSplash);	
-
-		nightmareSplash = new FlxSprite(-100, -400).loadGraphic(Paths.image('freeplayselect/nightmareSplash'));
-		nightmareSplash.scrollFactor.set();
-		nightmareSplash.antialiasing = ClientPrefs.globalAntialiasing;
-		nightmareSplash.setGraphicSize(Std.int(nightmareSplash.width * 0.7));
-		nightmareSplash.y += 230;
-		nightmareSplash.x -= 200;
-		nightmareSplash.alpha = 0;
-		add(nightmareSplash);	
-
-		changeItem();
+		for (i in 0...options.length)
+		{
+			var optionText:Alphabet = new Alphabet(0, 70 * i, options[i], true, false);
+			optionText.isMenuItem = true;
+			optionText.screenCenter(X);
+			optionText.yAdd -= 70;
+			optionText.forceX = optionText.x;
+			optionText.targetY = i;
+			grpOptions.add(optionText);
+		}
 
 		#if android
-		addVirtualPad(LEFT_RIGHT, A_B);
+		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press C to Go In Android Controls Menu', 16);
+		tipText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
+		tipText.borderSize = 2;
+		tipText.scrollFactor.set();
+		add(tipText);
 		#end
+
+		changeSelection();
+		ClientPrefs.saveSettings();
+
+                #if android
+		addVirtualPad(UP_DOWN, A_B_C);
+                #end
 
 		super.create();
 	}
-	
-	var selectedSomethin:Bool = false;
 
-	override function update(elapsed:Float)
-	{
-		if (FlxG.sound.music.volume < 0.8)
-		{
-			FlxG.sound.music.volume += 0.5 * FlxG.elapsed;
-		}
+	override function closeSubState() {
+		persistentUpdate = true;
+		super.closeSubState();
+		ClientPrefs.saveSettings();
+	}
 
-		if (!selectedSomethin)
-		{
-			if (controls.UI_LEFT_P)
-			{
-				FlxG.sound.play(Paths.sound('scrollMenu'));
-				changeItem(-1);
-			}
-
-			if (controls.UI_RIGHT_P)
-			{
-				FlxG.sound.play(Paths.sound('scrollMenu'));
-				changeItem(1);
-			}
-
-			if (controls.BACK)
-			{
-				selectedSomethin = true;
-				FlxG.sound.play(Paths.sound('cancelMenu'));
-				MusicBeatState.switchState(new MainMenuState());
-			}
-
-			if (controls.ACCEPT)
-			{
-				selectedSomethin = true;
-				FlxG.sound.play(Paths.sound('confirmMenu'));
-				
-				if (curSelected == 0)
-				{
-					FlxTween.tween(storySplash, {alpha: 1}, 0.1, {ease: FlxEase.linear, onComplete: function(twn:FlxTween) { FlxTween.tween(storySplash, {alpha: 0}, 0.4, {ease: FlxEase.linear, onComplete: function(twn:FlxTween) { goToState(); }}); }});
-				}
-				else if (curSelected == 1)
-				{
-					FlxTween.tween(bonusSplash, {alpha: 1}, 0.1, {ease: FlxEase.linear, onComplete: function(twn:FlxTween) { FlxTween.tween(bonusSplash, {alpha: 0}, 0.4, {ease: FlxEase.linear, onComplete: function(twn:FlxTween) { goToState(); }}); }});
-				} 
-				else if (curSelected == 2) 
-				{
-					FlxTween.tween(nightmareSplash, {alpha: 1}, 0.1, {ease: FlxEase.linear, onComplete: function(twn:FlxTween) { FlxTween.tween(nightmareSplash, {alpha: 0}, 0.4, {ease: FlxEase.linear, onComplete: function(twn:FlxTween) { goToState(); }}); }});
-				}
-				}
-			}
-
+	override function update(elapsed:Float) {
 		super.update(elapsed);
-	}
 
-	public function goToState()
-	{
-		var daChoice:String = optionShit[curSelected];
-
-		switch (daChoice)
-		{
-		    case 'story':
-				LoadingState.loadAndSwitchState(new FreeplayBonusState());
-			case 'bonus':
-				LoadingState.loadAndSwitchState(new FreeplayBonusState());
-			case 'nightmare':
-				LoadingState.loadAndSwitchState(new FreeplayBonusState());
-	}
-}
-	public function changeItem(huh:Int = 0)
-	{
-		curSelected += huh;
-
-		if (curSelected >= menuItems.length)
-			curSelected = 0;
-		if (curSelected < 0)
-			curSelected = menuItems.length - 1;	
-
-		switch (optionShit[curSelected])
-		{
-			case 'story':
-			  story.alpha = 1;
-				bonus.alpha = 0.6; 
-				nightmare.alpha = 0.6;
-curSelectedStory = true;
-curSelectedNightmare = false;
-curSelectedBonus = false;
-			case 'bonus':
-				bonus.alpha = 1;
-				story.alpha = 0.6;
-				nightmare.alpha = 0.6;
-curSelectedStory = false;
-curSelectedNightmare = false;
-curSelectedBonus = true;
-			case 'nightmare':
-				bonus.alpha = 0.6;
-				story.alpha = 0.6;
-				nightmare.alpha = 1;
-curSelectedStory = false;
-curSelectedNightmare = true;
-curSelectedBonus = false;
+		if (controls.UI_UP_P) {
+			changeSelection(-1);
 		}
+		if (controls.UI_DOWN_P) {
+			changeSelection(1);
+		}
+
+		if (controls.BACK) {
+			FlxG.sound.play(Paths.sound('cancelMenu'));
+			FlxG.sound.music.stop();
+			FlxG.sound.playMusic(Paths.music('freakyMenu'));
+			MusicBeatState.switchState(new MainMenuState());
+		}
+
+		if (controls.ACCEPT) {
+			openSelectedSubstate(options[curSelected]);
+		}
+
+		#if android
+		if (_virtualpad.buttonC.justPressed) {
+			MusicBeatState.switchState(new android.AndroidControlsMenu());
+		}
+		#end
+	}
+	
+	function changeSelection(change:Int = 0) {
+		curSelected += change;
+		if (curSelected < 0)
+			curSelected = options.length - 1;
+		if (curSelected >= options.length)
+			curSelected = 0;
+
+		var bullShit:Int = 0;
+
+		for (item in grpOptions.members) {
+			item.targetY = bullShit - curSelected;
+			bullShit++;
+
+			item.alpha = 0.6;
+			if (item.targetY == 0) {
+				item.alpha = 1;
+			}
+		}
+		FlxG.sound.play(Paths.sound('scrollMenu'));
 	}
 }
