@@ -25,63 +25,57 @@ import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
 
-import GameJolt.GameJoltAPI;
-import GameJolt;
-
 using StringTools;
 
 class OptionsState extends MusicBeatState
 {
-	var options:Array<String> = ['Controls', 'Graphics', 'Visuals and UI', 'Gameplay', 'Gamejolt', 'Adjust Delay and Combo'];
+	var options:Array<String> = ['Note Colors', 'Controls', 'Adjust Delay and Combo', 'Graphics', 'Visuals and UI', 'Gameplay'];
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private static var curSelected:Int = 0;
 	public static var menuBG:FlxSprite;
 
 	function openSelectedSubstate(label:String) {
 		switch(label) {
-			/*
 			case 'Note Colors':
-				persistentUpdate = false;
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.NotesSubState());
-			*/
-			#if (desktop || html5)
 			case 'Controls':
-				persistentUpdate = false;
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.ControlsSubState());
-			#else
-			case 'Controls':
-				persistentUpdate = false;
-				openSubState(new options.PreferencesSubstate());
-			#end
 			case 'Graphics':
-				persistentUpdate = false;
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.GraphicsSettingsSubState());
 			case 'Visuals and UI':
-				persistentUpdate = false;
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.VisualsUISubState());
 			case 'Gameplay':
-				persistentUpdate = false;
+				#if android
+				removeVirtualPad();
+				#end
 				openSubState(new options.GameplaySettingsSubState());
-			case 'Gamejolt':
-				persistentUpdate = false;
-				LoadingState.loadAndSwitchState(new GameJoltLogin());
 			case 'Adjust Delay and Combo':
 				LoadingState.loadAndSwitchState(new options.NoteOffsetState());
 		}
 	}
 
+	var selectorLeft:Alphabet;
+	var selectorRight:Alphabet;
+
 	override function create() {
+		FlxG.sound.playMusic(Paths.music('settin'), 1, true);
 		#if desktop
 		DiscordClient.changePresence("Options Menu", null);
 		#end
 
-        FlxG.sound.music.stop();
-	    FlxG.sound.playMusic(Paths.music('settin'));
-
-		persistentUpdate = persistentDraw = true;
-
-		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.color = 0xFFea71fd;
+		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuBG'));
 		bg.updateHitbox();
 
 		bg.screenCenter();
@@ -93,17 +87,19 @@ class OptionsState extends MusicBeatState
 
 		for (i in 0...options.length)
 		{
-			var optionText:Alphabet = new Alphabet(0, 70 * i, options[i], true, false);
-			optionText.isMenuItem = true;
-			optionText.screenCenter(X);
-			optionText.yAdd -= 70;
-			optionText.forceX = optionText.x;
-			optionText.targetY = i;
+			var optionText:Alphabet = new Alphabet(0, 0, options[i], true, false);
+			optionText.screenCenter();
+			optionText.y += (100 * (i - (options.length / 2))) + 50;
 			grpOptions.add(optionText);
 		}
 
+		selectorLeft = new Alphabet(0, 0, '>', true, false);
+		add(selectorLeft);
+		selectorRight = new Alphabet(0, 0, '<', true, false);
+		add(selectorRight);
+
 		#if android
-		var tipText:FlxText = new FlxText(10, FlxG.height - 24, 0, 'Press C to Go In Android Controls Menu', 16);
+		var tipText:FlxText = new FlxText(10, 12, 0, 'Press C to Go In Android Controls Menu', 16);
 		tipText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		tipText.borderSize = 2;
 		tipText.scrollFactor.set();
@@ -113,15 +109,13 @@ class OptionsState extends MusicBeatState
 		changeSelection();
 		ClientPrefs.saveSettings();
 
-                #if android
+		#if android
 		addVirtualPad(UP_DOWN, A_B_C);
-                #end
+		#end
 
 		super.create();
 	}
-
 	override function closeSubState() {
-		persistentUpdate = true;
 		super.closeSubState();
 		ClientPrefs.saveSettings();
 	}
@@ -137,9 +131,8 @@ class OptionsState extends MusicBeatState
 		}
 
 		if (controls.BACK) {
+			FlxG.sound.playMusic(Paths.music('freakyMenu'), 1, true);
 			FlxG.sound.play(Paths.sound('cancelMenu'));
-			FlxG.sound.music.stop();
-			FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			MusicBeatState.switchState(new MainMenuState());
 		}
 
@@ -148,8 +141,8 @@ class OptionsState extends MusicBeatState
 		}
 
 		#if android
-		if (_virtualpad.buttonC.justPressed) {
-			MusicBeatState.switchState(new android.AndroidControlsMenu());
+		if (virtualPad.buttonC.justPressed) {
+			MusicBeatState.switchState(new android.AndroidControlsSubState());
 		}
 		#end
 	}
@@ -170,6 +163,10 @@ class OptionsState extends MusicBeatState
 			item.alpha = 0.6;
 			if (item.targetY == 0) {
 				item.alpha = 1;
+				selectorLeft.x = item.x - 63;
+				selectorLeft.y = item.y;
+				selectorRight.x = item.x + item.width + 15;
+				selectorRight.y = item.y;
 			}
 		}
 		FlxG.sound.play(Paths.sound('scrollMenu'));
