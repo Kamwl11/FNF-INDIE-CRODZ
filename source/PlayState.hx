@@ -140,8 +140,8 @@ class PlayState extends MusicBeatState
 	private var strumLine:FlxSprite;
 
 	//Handles the new epic mega sexy cam code that i've done
-	private var camFollow:FlxPoint;
-	private var camFollowPos:FlxObject;
+	public var camFollow:FlxPoint;
+	public var camFollowPos:FlxObject;
 	private static var prevCamFollow:FlxPoint;
 	private static var prevCamFollowPos:FlxObject;
 
@@ -367,10 +367,20 @@ class PlayState extends MusicBeatState
 		if(PlayState.SONG.stage == null || PlayState.SONG.stage.length < 1) {
 			switch (songName)
 			{
-				case 'snake-eyes':
-				    curStage = 'field';
-				case 'imminent-demise':
-					curStage = 'bendy-p1';
+				case 'spookeez' | 'south' | 'monster':
+					curStage = 'spooky';
+				case 'pico' | 'blammed' | 'philly' | 'philly-nice':
+					curStage = 'philly';
+				case 'milf' | 'satin-panties' | 'high':
+					curStage = 'limo';
+				case 'cocoa' | 'eggnog':
+					curStage = 'mall';
+				case 'winter-horrorland':
+					curStage = 'mallEvil';
+				case 'senpai' | 'roses':
+					curStage = 'school';
+				case 'thorns':
+					curStage = 'schoolEvil';
 				default:
 					curStage = 'stage';
 			}
@@ -449,6 +459,23 @@ class PlayState extends MusicBeatState
 					stageCurtains.updateHitbox();
 					add(stageCurtains);
 				}
+
+			case 'spooky': //Week 2
+				if(!ClientPrefs.lowQuality) {
+					halloweenBG = new BGSprite('halloween_bg', -200, -100, ['halloweem bg0', 'halloweem bg lightning strike']);
+				} else {
+					halloweenBG = new BGSprite('halloween_bg_low', -200, -100);
+				}
+				add(halloweenBG);
+
+				halloweenWhite = new BGSprite(null, -FlxG.width, -FlxG.height, 0, 0);
+				halloweenWhite.makeGraphic(Std.int(FlxG.width * 3), Std.int(FlxG.height * 3), FlxColor.WHITE);
+				halloweenWhite.alpha = 0;
+				halloweenWhite.blend = ADD;
+
+				//PRECACHE SOUNDS
+				CoolUtil.precacheSound('thunder_1');
+				CoolUtil.precacheSound('thunder_2');
 
 			case 'philly': //Week 3
 				if(!ClientPrefs.lowQuality) {
@@ -692,6 +719,9 @@ class PlayState extends MusicBeatState
 		add(dadGroup);
 		add(boyfriendGroup);
 		
+		if(curStage == 'spooky') {
+			add(halloweenWhite);
+		}
 
 		#if LUA_ALLOWED
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
@@ -710,39 +740,7 @@ class PlayState extends MusicBeatState
 				phillyCityLightsEvent.add(light);
 			}
 		}
-	case 'field': //wow
-				var cupbg:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('BG-00', 'cup'));
-				cupbg.scale.set(3.5, 3.5);
-				cupbg.antialiasing = ClientPrefs.globalAntialiasing;
-				cupbg.screenCenter();
-				cupbg.updateHitbox();
-				add(cupbg);
 
-				var cupfarbg:FlxSprite = new FlxSprite(-725, -400).loadGraphic(Paths.image('BG-01', 'cup'));
-				cupfarbg.scale.set(3.5, 3.5);
-				cupfarbg.antialiasing = ClientPrefs.globalAntialiasing;
-				cupfarbg.screenCenter();
-				cupfarbg.updateHitbox();
-				add(cupfarbg);
-
-				var bg:FlxSprite = new FlxSprite(1600, -400).loadGraphic(Paths.image('Foreground', 'cup'));
-				bg.scale.set(3.5, 3.5);
-				bg.antialiasing = ClientPrefs.globalAntialiasing;
-				bg.screenCenter();
-				bg.updateHitbox();
-				add(bg);
-
-				if (!ClientPrefs.lowQuality)
-				{
-					cupshid = new FlxSprite(0, 0);
-					cupshid.frames = Paths.getSparrowAtlas('CUpheqdshid', 'cup');
-					cupshid.animation.addByPrefix('cupGrain', 'Cupheadshit_gif instance 1', 24, true);
-					cupshid.animation.play('cupGrain');
-					cupshid.antialiasing = ClientPrefs.globalAntialiasing;
-					cupshid.screenCenter();
-					add(cupshid);
-					cupshid.cameras = [camHUD2];
-				}
 
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
@@ -957,7 +955,7 @@ class PlayState extends MusicBeatState
 		opponentStrums = new FlxTypedGroup<StrumNote>();
 		playerStrums = new FlxTypedGroup<StrumNote>();
 
-		// startwn();
+		// startCountdown();
 
 		generateSong(SONG.song);
 		#if LUA_ALLOWED
@@ -1541,9 +1539,8 @@ public function addShaderToCamera(cam:String,effect:ShaderEffect){//STOLE FROM A
 		char.x += char.positionArray[0];
 		char.y += char.positionArray[1];
 	}
-
-	public function startVideo(name:String) {
-		#if VIDEOS_ALLOWED
+public function startVideo(name:String) {
+#if VIDEOS_ALLOWED
 		inCutscene = true;
 
 		var filepath:String = Paths.video(name);
@@ -1558,17 +1555,17 @@ public function addShaderToCamera(cam:String,effect:ShaderEffect){//STOLE FROM A
 			return;
 		}
 
-		FlxG.sound.music.stop();
 		var video:MP4Handler = new MP4Handler();
 		video.playVideo(filepath);
-
 		video.finishCallback = function()
 		{
 			startAndEnd();
+			return;
 		}
 		#else
-		FlxG.log.warn('Platform not supported!');  
+		FlxG.log.warn('Platform not supported!');
 		startAndEnd();
+		return;
 		#end
 	}
 
@@ -1726,9 +1723,9 @@ public function addShaderToCamera(cam:String,effect:ShaderEffect){//STOLE FROM A
 		var ret:Dynamic = callOnLuas('onStartCountdown', []);
 		if(ret != FunkinLua.Function_Stop) {
 			if (skipCountdown || startOnTime > 0) skipArrowStartTween = true;
-    #if android
-  androidControls.visible = true;
-    #end
+                        #if android
+                        androidControls.visible = true;
+                        #end
 			generateStaticArrows(0);
 			generateStaticArrows(1);
 
@@ -1822,15 +1819,14 @@ public function addShaderToCamera(cam:String,effect:ShaderEffect){//STOLE FROM A
 						});
 						FlxG.sound.play(Paths.sound('intro2' + introSoundsSuffix), 0.6);
 					case 2:
-countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
-						countdownSet.cameras = [camHUD];
+						countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 						countdownSet.scrollFactor.set();
 
 						if (PlayState.isPixelStage)
 							countdownSet.setGraphicSize(Std.int(countdownSet.width * daPixelZoom));
+
 						countdownSet.screenCenter();
 						countdownSet.antialiasing = antialias;
-						insert(members.indexOf(notes), countdownSet); 
 						add(countdownSet);
 						FlxTween.tween(countdownSet, {/*y: countdownSet.y + 100,*/ alpha: 0}, Conductor.crochet / 1000, {
 							ease: FlxEase.cubeInOut,
@@ -1924,10 +1920,13 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 
 		FlxG.sound.music.time = time;
 		FlxG.sound.music.play();
-
-		vocals.time = time;
+		if (Conductor.songPosition <= vocals.length)
+		{
+			vocals.time = time;
+		}
 		vocals.play();
 		Conductor.songPosition = time;
+			vocals.time = time;
 	}
 
 	function startNextDialogue() {
@@ -2379,7 +2378,10 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 
 		FlxG.sound.music.play();
 		Conductor.songPosition = FlxG.sound.music.time;
-		vocals.time = Conductor.songPosition;
+		if (Conductor.songPosition <= vocals.length)
+		{
+			vocals.time = Conductor.songPosition;
+		}
 		vocals.play();
 	}
 
@@ -2512,7 +2514,7 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 		if(!inCutscene) {
 			var lerpVal:Float = CoolUtil.boundTo(elapsed * 2.4 * cameraSpeed, 0, 1);
 			camFollowPos.setPosition(FlxMath.lerp(camFollowPos.x, camFollow.x, lerpVal), FlxMath.lerp(camFollowPos.y, camFollow.y, lerpVal));
-			if(!startingSong && !endingSong && boyfriend.animation.curAnim.name.startsWith('idle')) {
+			if(!startingSong && !endingSong && boyfriend.animation.curAnim != null && boyfriend.animation.curAnim.name.startsWith('idle')) {
 				boyfriendIdleTime += elapsed;
 				if(boyfriendIdleTime >= 0.15) { // Kind of a mercy thing for making the achievement easier to get as it's apparently frustrating to some playerss
 					boyfriendIdled = true;
@@ -2662,12 +2664,12 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 		FlxG.watch.addQuick("beatShit", curBeat);
 		FlxG.watch.addQuick("stepShit", curStep);
 
-		/* RESET = Quick Game Over Screen
+		// RESET = Quick Game Over Screen
 		if (!ClientPrefs.noReset && controls.RESET && !inCutscene && !endingSong)
 		{
 			health = 0;
 			trace("RESET = True");
-		} */ 
+		}
 		doDeathCheck();
 
 		if (unspawnNotes[0] != null)
@@ -3380,9 +3382,9 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 			}
 		}
 
-    	#if android
-        androidControls.visible = false;
-        #end		
+                #if android
+                androidControls.visible = false;
+                #end		
 		timeBarBG.visible = false;
 		timeBar.visible = false;
 		timeTxt.visible = false;
@@ -3861,18 +3863,6 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 	// Hold notes
 	private function keyShit():Void
 	{
-	/*	#if android
-		if(_virtualpad.buttonA.justPressed) {
-			callOnLuas('buttonAjustPressed', []);
-			return;
-		}
-
-		if(_virtualpad.buttonD.justPressed) {
-			callOnLuas('buttonDjustPressed', []);
-			return;
-		}
-		#end */
-
 		// HOLDING
 		var up = controls.NOTE_UP;
 		var right = controls.NOTE_RIGHT;
@@ -3895,7 +3885,7 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 		}
 
 		// FlxG.watch.addQuick('asdfa', upP);
-		if (!boyfriend.stunned && generatedMusic)
+		if (startedCountdown && !boyfriend.stunned && generatedMusic)
 		{
 			// rewritten inputs???
 			notes.forEachAlive(function(daNote:Note)
@@ -4553,6 +4543,15 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 				}
 		}
 
+		if (curStage == 'spooky' && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
+		{
+			lightningStrikeShit();
+		}
+		lastBeatHit = curBeat;
+
+		setOnLuas('curBeat', curBeat); //DAWGG?????
+		callOnLuas('onBeatHit', []);
+	}
 
 	public var closeLuas:Array<FunkinLua> = [];
 	public function callOnLuas(event:String, args:Array<Dynamic>):Dynamic {
