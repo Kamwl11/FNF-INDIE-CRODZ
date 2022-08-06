@@ -482,7 +482,7 @@ class PlayState extends MusicBeatState
 				bg.screenCenter();
 				bg.updateHitbox();
 				add(bg);
-                     var cupshid = new FlxSprite(0, 0);
+                     var cupshid:FlxSprite= new FlxSprite(0, 0);
 					cupshid.frames = Paths.getSparrowAtlas('CUpheqdshid');
 					cupshid.animation.addByPrefix('cupGrain', 'Cupheadshit_gif instance 1', 24, true);
 					cupshid.animation.play('cupGrain');
