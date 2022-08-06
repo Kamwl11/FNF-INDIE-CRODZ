@@ -198,10 +198,13 @@ class PlayState extends MusicBeatState
 	public var camGameShaders:Array<ShaderEffect> = [];
 	public var camHUDShaders:Array<ShaderEffect> = [];
 	public var camOtherShaders:Array<ShaderEffect> = [];
-	//healthbar
+	
+	//healthbar shit
 	public static var cupheadsong:Bool = false;
 	var sanssong:Bool = false;
 	var bendysong:Bool = false;
+
+	
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 	var dialogueJson:DialogueFile = null;
 
@@ -780,6 +783,7 @@ class PlayState extends MusicBeatState
 			bendysong = false;
 		}
 
+
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
 		var filesPushed:Array<String> = [];
@@ -1030,8 +1034,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 		#end
-		.clear();
-		 = null;
+		noteTypeMap.clear();
+		noteTypeMap = null;
 		eventPushedMap.clear();
 		eventPushedMap = null;
 
@@ -1068,17 +1072,30 @@ class PlayState extends MusicBeatState
 			healthBarBG = new AttachedSprite('cuphealthbar');
 		}
 		else
-		{
+            	}
 		healthBarBG = new AttachedSprite('healthBar');
 		healthBarBG.y = FlxG.height * 0.89;
 		healthBarBG.screenCenter(X);
 		healthBarBG.scrollFactor.set();
 		healthBarBG.visible = !ClientPrefs.hideHud;
+		if (cupheadsong)
+		{
+			healthBarBG.xAdd = -4;
+		    healthBarBG.yAdd = 4;
+		}
+		else
+}
 		healthBarBG.xAdd = -4;
 		healthBarBG.yAdd = -4;
 		add(healthBarBG);
 		if(ClientPrefs.downScroll) healthBarBG.y = 0.11 * FlxG.height;
-
+                    if (cupheadsong)
+		{
+			healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y - 20, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height + 16), this,
+			'health', 0, 2);
+		}
+		else
+		}
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'shownHealth', 0, 2);
 		healthBar.scrollFactor.set();
@@ -2022,7 +2039,7 @@ public function startVideo(name:String) {
 	}
 
 	var debugNum:Int = 0;
-	private var :Map<String, Bool> = new Map<String, Bool>();
+	private var noteTypeMap:Map<String, Bool> = new Map<String, Bool>();
 	private var eventPushedMap:Map<String, Bool> = new Map<String, Bool>();
 	private function generateSong(dataPath:String):Void
 	{
@@ -2163,8 +2180,8 @@ public function startVideo(name:String) {
 					}
 				}
 
-				if(!.exists(swagNote.noteType)) {
-					.set(swagNote.noteType, true);
+				if(!noteTypeMap.exists(swagNote.noteType)) {
+					noteTypeMap.set(swagNote.noteType, true);
 				}
 			}
 			daBeats += 1;
