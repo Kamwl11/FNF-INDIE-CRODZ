@@ -467,8 +467,6 @@ class PlayState extends MusicBeatState
 				cupbg.screenCenter();
 				cupbg.updateHitbox();
 				add(cupbg);
-		}
-}
 
 			case 'spooky': //Week 2
 				if(!ClientPrefs.lowQuality) {
