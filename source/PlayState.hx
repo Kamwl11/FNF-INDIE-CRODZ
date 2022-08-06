@@ -490,8 +490,7 @@ class PlayState extends MusicBeatState
 					cupshid.screenCenter();
 					add(cupshid);
 					cupshid.cameras = [camHUD2];
-				}
-
+				
 			case 'spooky': //Week 2
 				if(!ClientPrefs.lowQuality) {
 					halloweenBG = new BGSprite('halloween_bg', -200, -100, ['halloweem bg0', 'halloweem bg lightning strike']);
