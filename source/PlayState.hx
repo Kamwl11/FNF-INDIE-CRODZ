@@ -467,6 +467,22 @@ class PlayState extends MusicBeatState
 				cupbg.screenCenter();
 				cupbg.updateHitbox();
 				add(cupbg);
+				
+		var cupfarbg:FlxSprite = new FlxSprite(-725, -400).loadGraphic(Paths.image('BG-01'));
+				cupfarbg.scale.set(3.5, 3.5);
+				cupfarbg.antialiasing = ClientPrefs.globalAntialiasing;
+				cupfarbg.screenCenter();
+				cupfarbg.updateHitbox();
+				add(cupfarbg);
+				
+				
+	          var bg:FlxSprite = new FlxSprite(1600, -400).loadGraphic(Paths.image('Foreground'));
+				bg.scale.set(3.5, 3.5);
+				bg.antialiasing = ClientPrefs.globalAntialiasing;
+				bg.screenCenter();
+				bg.updateHitbox();
+				add(bg);
+
 
 			case 'spooky': //Week 2
 				if(!ClientPrefs.lowQuality) {
