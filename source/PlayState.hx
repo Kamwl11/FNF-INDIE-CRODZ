@@ -461,12 +461,14 @@ class PlayState extends MusicBeatState
 				}
 
                               case 'field': //Week wow 
-                    var cupbg:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('BG-00', 'cup'));
+                    var cupbg:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('BG-00'));
 				cupbg.scale.set(3.5, 3.5);
 				cupbg.antialiasing = ClientPrefs.globalAntialiasing;
 				cupbg.screenCenter();
 				cupbg.updateHitbox();
 				add(cupbg);
+		}
+}
 
 			case 'spooky': //Week 2
 				if(!ClientPrefs.lowQuality) {
