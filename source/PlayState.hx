@@ -450,23 +450,6 @@ class PlayState extends MusicBeatState
 					add(stageCurtains);
 				}
 
-			case 'spooky': //Week 2
-				if(!ClientPrefs.lowQuality) {
-					halloweenBG = new BGSprite('halloween_bg', -200, -100, ['halloweem bg0', 'halloweem bg lightning strike']);
-				} else {
-					halloweenBG = new BGSprite('halloween_bg_low', -200, -100);
-				}
-				add(halloweenBG);
-
-				halloweenWhite = new BGSprite(null, -FlxG.width, -FlxG.height, 0, 0);
-				halloweenWhite.makeGraphic(Std.int(FlxG.width * 3), Std.int(FlxG.height * 3), FlxColor.WHITE);
-				halloweenWhite.alpha = 0;
-				halloweenWhite.blend = ADD;
-
-				//PRECACHE SOUNDS
-				CoolUtil.precacheSound('thunder_1');
-				CoolUtil.precacheSound('thunder_2');
-
 			case 'philly': //Week 3
 				if(!ClientPrefs.lowQuality) {
 					var bg:BGSprite = new BGSprite('philly/sky', -100, 0, 0.1, 0.1);
@@ -709,9 +692,6 @@ class PlayState extends MusicBeatState
 		add(dadGroup);
 		add(boyfriendGroup);
 		
-		if(curStage == 'spooky') {
-			add(halloweenWhite);
-		}
 
 		#if LUA_ALLOWED
 		luaDebugGroup = new FlxTypedGroup<DebugLuaText>();
@@ -4573,15 +4553,6 @@ countdownSet = new FlxSprite().loadGraphic(Paths.image(introAlts[1]));
 				}
 		}
 
-		if (curStage == 'spooky' && FlxG.random.bool(10) && curBeat > lightningStrikeBeat + lightningOffset)
-		{
-			lightningStrikeShit();
-		}
-		lastBeatHit = curBeat;
-
-		setOnLuas('curBeat', curBeat); //DAWGG?????
-		callOnLuas('onBeatHit', []);
-	}
 
 	public var closeLuas:Array<FunkinLua> = [];
 	public function callOnLuas(event:String, args:Array<Dynamic>):Dynamic {
