@@ -1072,7 +1072,6 @@ class PlayState extends MusicBeatState
 			healthBarBG = new AttachedSprite('cuphealthbar');
 		}
 		else
-            	}
 		healthBarBG = new AttachedSprite('healthBar');
 		healthBarBG.y = FlxG.height * 0.89;
 		healthBarBG.screenCenter(X);
@@ -1084,7 +1083,6 @@ class PlayState extends MusicBeatState
 		    healthBarBG.yAdd = 4;
 		}
 		else
-}
 		healthBarBG.xAdd = -4;
 		healthBarBG.yAdd = -4;
 		add(healthBarBG);
@@ -1095,7 +1093,6 @@ class PlayState extends MusicBeatState
 			'health', 0, 2);
 		}
 		else
-		}
 		healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height - 8), this,
 			'shownHealth', 0, 2);
 		healthBar.scrollFactor.set();
