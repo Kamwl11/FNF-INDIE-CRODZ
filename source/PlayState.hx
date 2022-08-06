@@ -1087,6 +1087,7 @@ class PlayState extends MusicBeatState
 		healthBarBG.yAdd = -4;
 		add(healthBarBG);
 		if(ClientPrefs.downScroll) healthBarBG.y = 0.11 * FlxG.height;
+		
                     if (cupheadsong)
 		{
 			healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y - 20, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height + 16), this,
@@ -1101,6 +1102,11 @@ class PlayState extends MusicBeatState
 		healthBar.alpha = ClientPrefs.healthBarAlpha;
 		add(healthBar);
 		healthBarBG.sprTracker = healthBar;
+	if (cupheadsong)
+		{
+			healthBar.scale.set(0.95, 0.5); //x then y lol
+		}
+
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - 75;
