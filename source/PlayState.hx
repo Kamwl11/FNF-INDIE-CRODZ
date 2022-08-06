@@ -4,7 +4,6 @@ import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
 #end
-import lime.app.Application;
 import Section.SwagSection;
 import Song.SwagSong;
 import WiggleEffect.WiggleEffectType;
@@ -368,7 +367,6 @@ class PlayState extends MusicBeatState
 		if(PlayState.SONG.stage == null || PlayState.SONG.stage.length < 1) {
 			switch (songName)
 			{
-			
 				case 'spookeez' | 'south' | 'monster':
 					curStage = 'spooky';
 				case 'pico' | 'blammed' | 'philly' | 'philly-nice':
@@ -383,11 +381,7 @@ class PlayState extends MusicBeatState
 					curStage = 'school';
 				case 'thorns':
 					curStage = 'schoolEvil';
-					
-		case 'snake-eyes':
-		curStage = 'field';
-		
-		default:
+				default:
 					curStage = 'stage';
 			}
 		}
@@ -465,6 +459,16 @@ class PlayState extends MusicBeatState
 					stageCurtains.updateHitbox();
 					add(stageCurtains);
 				}
+
+                              case 'field': //Week wow 
+                    var cupbg:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('BG-00', 'cup'));
+				cupbg.scale.set(3.5, 3.5);
+				cupbg.antialiasing = ClientPrefs.globalAntialiasing;
+				cupbg.screenCenter();
+				cupbg.updateHitbox();
+				add(cupbg);
+		}
+}
 
 			case 'spooky': //Week 2
 				if(!ClientPrefs.lowQuality) {
@@ -746,39 +750,7 @@ class PlayState extends MusicBeatState
 				phillyCityLightsEvent.add(light);
 			}
 		}
-                     if(curStage == 'field') {
-				var cupbg:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('BG-00', 'cup'));
-				cupbg.scale.set(3.5, 3.5);
-				cupbg.antialiasing = ClientPrefs.globalAntialiasing;
-				cupbg.screenCenter();
-				cupbg.updateHitbox();
-				add(cupbg);
 
-				var cupfarbg:FlxSprite = new FlxSprite(-725, -400).loadGraphic(Paths.image('BG-01', 'cup'));
-				cupfarbg.scale.set(3.5, 3.5);
-				cupfarbg.antialiasing = ClientPrefs.globalAntialiasing;
-				cupfarbg.screenCenter();
-				cupfarbg.updateHitbox();
-				add(cupfarbg);
-
-				var bg:FlxSprite = new FlxSprite(1600, -400).loadGraphic(Paths.image('Foreground', 'cup'));
-				bg.scale.set(3.5, 3.5);
-				bg.antialiasing = ClientPrefs.globalAntialiasing;
-				bg.screenCenter();
-				bg.updateHitbox();
-				add(bg);
-
-				if (!ClientPrefs.lowQuality)
-				{
-					cupshid = new FlxSprite(0, 0);
-					cupshid.frames = Paths.getSparrowAtlas('CUpheqdshid', 'cup');
-					cupshid.animation.addByPrefix('cupGrain', 'Cupheadshit_gif instance 1', 24, true);
-					cupshid.animation.play('cupGrain');
-					cupshid.antialiasing = ClientPrefs.globalAntialiasing;
-					cupshid.screenCenter();
-					add(cupshid);
-					cupshid.cameras = [camHUD2];
-				}
 
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
