@@ -746,7 +746,7 @@ class PlayState extends MusicBeatState
 				phillyCityLightsEvent.add(light);
 			}
 		}
-                     case 'field':
+                     if(curStage == 'field') {
 				var cupbg:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('BG-00', 'cup'));
 				cupbg.scale.set(3.5, 3.5);
 				cupbg.antialiasing = ClientPrefs.globalAntialiasing;
