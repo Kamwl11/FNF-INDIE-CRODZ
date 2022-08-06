@@ -198,7 +198,10 @@ class PlayState extends MusicBeatState
 	public var camGameShaders:Array<ShaderEffect> = [];
 	public var camHUDShaders:Array<ShaderEffect> = [];
 	public var camOtherShaders:Array<ShaderEffect> = [];
-	
+	//healthbar
+	public static var cupheadsong:Bool = false;
+	var sanssong:Bool = false;
+	var bendysong:Bool = false;
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 	var dialogueJson:DialogueFile = null;
 
@@ -770,7 +773,12 @@ class PlayState extends MusicBeatState
 				phillyCityLightsEvent.add(light);
 			}
 		}
-
+                    if (SONG.song == 'Snake-Eyes' || SONG.song == 'Technicolor-Tussle' || SONG.song == 'Knockout'|| SONG.song == 'Devils-Gambit')
+		{
+			cupheadsong = true;
+			sanssong = false;
+			bendysong = false;
+		}
 
 		// "GLOBAL" SCRIPTS
 		#if LUA_ALLOWED
@@ -989,7 +997,7 @@ class PlayState extends MusicBeatState
 
 		generateSong(SONG.song);
 		#if LUA_ALLOWED
-		for (notetype in noteTypeMap.keys())
+		for (notetype in .keys())
 		{
 			var luaToLoad:String = Paths.modFolders('custom_notetypes/' + notetype + '.lua');
 			if(FileSystem.exists(luaToLoad))
@@ -1022,8 +1030,8 @@ class PlayState extends MusicBeatState
 			}
 		}
 		#end
-		noteTypeMap.clear();
-		noteTypeMap = null;
+		.clear();
+		 = null;
 		eventPushedMap.clear();
 		eventPushedMap = null;
 
@@ -1055,7 +1063,12 @@ class PlayState extends MusicBeatState
 
 		FlxG.fixedTimestep = false;
 		moveCameraSection(0);
-
+                    if (cupheadsong)
+		{
+			healthBarBG = new AttachedSprite('cuphealthbar');
+		}
+		else
+		{
 		healthBarBG = new AttachedSprite('healthBar');
 		healthBarBG.y = FlxG.height * 0.89;
 		healthBarBG.screenCenter(X);
@@ -2009,7 +2022,7 @@ public function startVideo(name:String) {
 	}
 
 	var debugNum:Int = 0;
-	private var noteTypeMap:Map<String, Bool> = new Map<String, Bool>();
+	private var :Map<String, Bool> = new Map<String, Bool>();
 	private var eventPushedMap:Map<String, Bool> = new Map<String, Bool>();
 	private function generateSong(dataPath:String):Void
 	{
@@ -2150,8 +2163,8 @@ public function startVideo(name:String) {
 					}
 				}
 
-				if(!noteTypeMap.exists(swagNote.noteType)) {
-					noteTypeMap.set(swagNote.noteType, true);
+				if(!.exists(swagNote.noteType)) {
+					.set(swagNote.noteType, true);
 				}
 			}
 			daBeats += 1;
