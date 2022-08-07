@@ -1090,7 +1090,7 @@ class PlayState extends MusicBeatState
 		
                     if (cupheadsong)
 		{
-			healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y - 20, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height + 16), this,
+			healthBar = new FlxBar(healthBarBG.x + 4, healthBarBG.y + 4, RIGHT_TO_LEFT, Std.int(healthBarBG.width - 8), Std.int(healthBarBG.height + 8), this,
 			'health', 0, 2);
 		}
 		else
