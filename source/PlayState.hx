@@ -199,11 +199,7 @@ class PlayState extends MusicBeatState
 	public var camHUDShaders:Array<ShaderEffect> = [];
 	public var camOtherShaders:Array<ShaderEffect> = [];
 	
-	//healthbar shit
-	public static var cupheadsong:Bool = false;
-	var sanssong:Bool = false;
-	var bendysong:Bool = false;
-
+	
 	
 	var dialogue:Array<String> = ['blah blah blah', 'coolswag'];
 	var dialogueJson:DialogueFile = null;
@@ -776,12 +772,6 @@ class PlayState extends MusicBeatState
 				phillyCityLightsEvent.add(light);
 			}
 		}
-                    if (SONG.song == 'Snake-Eyes' || SONG.song == 'Technicolor-Tussle' || SONG.song == 'Knockout'|| SONG.song == 'Devils-Gambit')
-		{
-			cupheadsong = true;
-			sanssong = false;
-			bendysong = false;
-		}
 
 
 		// "GLOBAL" SCRIPTS
@@ -1067,11 +1057,6 @@ class PlayState extends MusicBeatState
 
 		FlxG.fixedTimestep = false;
 		moveCameraSection(0);
-                    if (cupheadsong)
-		{
-			healthBarBG = new AttachedSprite('cuphealthbar');
-		}
-		else
 		healthBarBG = new AttachedSprite('healthBar');
 		healthBarBG.y = FlxG.height * 0.89;
 		healthBarBG.screenCenter(X);
