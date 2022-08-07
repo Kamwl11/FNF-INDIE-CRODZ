@@ -1080,7 +1080,7 @@ class PlayState extends MusicBeatState
 		if (cupheadsong)
 		{
 			healthBarBG.xAdd = -4;
-		    healthBarBG.yAdd = 4;
+		    healthBarBG.yAdd = -4;
 		}
 		else
 		healthBarBG.xAdd = -4;
@@ -1102,11 +1102,6 @@ class PlayState extends MusicBeatState
 		healthBar.alpha = ClientPrefs.healthBarAlpha;
 		add(healthBar);
 		healthBarBG.sprTracker = healthBar;
-	if (cupheadsong)
-		{
-			healthBar.scale.set(0.95, 0.5); //x then y lol
-		}
-
 
 		iconP1 = new HealthIcon(boyfriend.healthIcon, true);
 		iconP1.y = healthBar.y - 75;
