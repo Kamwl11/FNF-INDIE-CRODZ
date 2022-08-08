@@ -190,7 +190,6 @@ class PlayState extends MusicBeatState
 	public var iconP1:HealthIcon;
 	public var iconP2:HealthIcon;
 	public var camHUD:FlxCamera;
-	public var camHUD2:FlxCamera;
 	public var camGame:FlxCamera;
 	public var camOther:FlxCamera;
 	public var cameraSpeed:Float = 1;
@@ -335,15 +334,12 @@ class PlayState extends MusicBeatState
 		// var gameCam:FlxCamera = FlxG.camera;
 		camGame = new FlxCamera();
 		camHUD = new FlxCamera();
-		camHUD2 = new FlxCamera();
 		camOther = new FlxCamera();
 		camHUD.bgColor.alpha = 0;
-		camHUD2.bgColor.alpha = 0;
 		camOther.bgColor.alpha = 0;
 
 		FlxG.cameras.reset(camGame);
 		FlxG.cameras.add(camHUD);
-		FlxG.cameras.add(camHUD2);
 		FlxG.cameras.add(camOther);
 		grpNoteSplashes = new FlxTypedGroup<NoteSplash>();
 
@@ -507,7 +503,7 @@ class PlayState extends MusicBeatState
 					cupshid.antialiasing = ClientPrefs.globalAntialiasing;
 					cupshid.screenCenter();
 					add(cupshid);
-					cupshid.cameras = [camHUD2];
+					cupshid.cameras = [camHUD];
 			case 'spooky': //Week 2
 				if(!ClientPrefs.lowQuality) {
 					halloweenBG = new BGSprite('halloween_bg', -200, -100, ['halloweem bg0', 'halloweem bg lightning strike']);
@@ -788,12 +784,7 @@ class PlayState extends MusicBeatState
 				phillyCityLightsEvent.add(light);
 			}
 		}
-                    if (SONG.song == 'Snake-Eyes' || SONG.song == 'Technicolor-Tussle' || SONG.song == 'Knockout'|| SONG.song == 'Devils-Gambit')
-		{
-			cupheadsong = true;
-			sanssong = false;
-			bendysong = false;
-		}
+                    
 
 
 		// "GLOBAL" SCRIPTS
@@ -1088,11 +1079,6 @@ class PlayState extends MusicBeatState
 
 		FlxG.fixedTimestep = false;
 		moveCameraSection(0);
-                    if (cupheadsong)
-		{
-			healthBarBG = new AttachedSprite('cuphealthbar');
-		}
-		else
 		healthBarBG = new AttachedSprite('healthBar');
 		healthBarBG.y = FlxG.height * 0.89;
 		healthBarBG.screenCenter(X);
