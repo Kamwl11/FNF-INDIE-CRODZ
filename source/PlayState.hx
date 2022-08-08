@@ -1,14 +1,12 @@
-package;
+packagepackage;
 
 import flixel.graphics.FlxGraphic;
 #if desktop
 import Discord.DiscordClient;
 #end
-import lime.app.Application;
 import Section.SwagSection;
 import Song.SwagSong;
 import WiggleEffect.WiggleEffectType;
-import flixel.effects.FlxFlicker;
 import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.FlxG;
@@ -57,20 +55,13 @@ import Achievements;
 import StageData;
 import FunkinLua;
 import DialogueBoxPsych;
-import openfl.events.IOErrorEvent;
-import openfl.events.Event;
-import openfl.net.FileReference;
-import openfl.utils.Dictionary;
-import openfl.filters.ShaderFilter;
-#if sys
+#if MODS_ALLOWED
 import sys.FileSystem;
-import sys.io.File;
 #end
-
 #if VIDEOS_ALLOWED
 import vlc.MP4Handler;
 #end
-import shaders
+import Shaders;
 import openfl.filters.ShaderFilter;
 import openfl.filters.BitmapFilter;
 
