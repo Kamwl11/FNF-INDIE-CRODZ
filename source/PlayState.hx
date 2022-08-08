@@ -7,11 +7,6 @@ import Discord.DiscordClient;
 import lime.app.Application;
 import Section.SwagSection;
 import Song.SwagSong;
-//WEBM
-#if sys
-import webm.WebmPlayer;
-#end
-//no more webm
 import WiggleEffect.WiggleEffectType;
 import flixel.effects.FlxFlicker;
 import flixel.FlxBasic;
@@ -72,8 +67,12 @@ import sys.FileSystem;
 import sys.io.File;
 #end
 
-import GameJolt.GameJoltAPI;
-import GameJolt;
+#if VIDEOS_ALLOWED
+import vlc.MP4Handler;
+#end
+import shaders
+import openfl.filters.ShaderFilter;
+import openfl.filters.BitmapFilter;
 
 using StringTools;
 
@@ -98,8 +97,10 @@ class PlayState extends MusicBeatState
 	public var modchartSprites:Map<String, ModchartSprite> = new Map<String, ModchartSprite>();
 	public var modchartTimers:Map<String, FlxTimer> = new Map<String, FlxTimer>();
 	public var modchartSounds:Map<String, FlxSound> = new Map<String, FlxSound>();
+public var shader_chromatic_abberation: ChromaticAberrationEffect;
 	public var modchartTexts:Map<String, ModchartText> = new Map<String, ModchartText>();
 	public var modchartSaves:Map<String, FlxSave> = new Map<String, FlxSave>();
+	
 	//event variables
 	private var isCameraOnForcedPos:Bool = false;
 	#if (haxe >= "4.0.0")
@@ -165,8 +166,8 @@ class PlayState extends MusicBeatState
 	private var strumLine:FlxSprite;
 
 	//Handles the new epic mega sexy cam code that i've done
-	private var camFollow:FlxPoint;
-	private var camFollowPos:FlxObject;
+	public var camFollow:FlxPoint;
+	public var camFollowPos:FlxObject;
 	private static var prevCamFollow:FlxPoint;
 	private static var prevCamFollowPos:FlxObject;
 
@@ -180,6 +181,7 @@ class PlayState extends MusicBeatState
 
 	public var gfSpeed:Int = 1;
 	public var health:Float = 1;
+	public var shownhealth:Float = 1;
 	public var combo:Int = 0;
 
 	private var healthBarBG:AttachedSprite;
@@ -649,7 +651,7 @@ class PlayState extends MusicBeatState
 			switch (songName)
 			{
 				case 'snake-eyes':
-				    curStage = 'field';
+				    curStage = 'cuphead-p1';
 				case 'imminent-demise':
 					curStage = 'bendy-p1';
 				default:
@@ -827,7 +829,7 @@ class PlayState extends MusicBeatState
 				runbg2.updateHitbox();
 				add(runbg2);
 			case 'field':
-				var cupbg:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('BG-00'));
+				var cupbg:FlxSprite = new FlxSprite(-400, -400).loadGraphic(Paths.image('BG-00', 'cup'));
 				cupbg.scale.set(3.5, 3.5);
 				cupbg.antialiasing = ClientPrefs.globalAntialiasing;
 				cupbg.screenCenter();
@@ -841,7 +843,7 @@ class PlayState extends MusicBeatState
 				cupfarbg.updateHitbox();
 				add(cupfarbg);
 
-				var bg:FlxSprite = new FlxSprite(1600, -400).loadGraphic(Paths.image('Foreground'));
+				var bg:FlxSprite = new FlxSprite(1600, -400).loadGraphic(Paths.image('Foreground', 'cup'));
 				bg.scale.set(3.5, 3.5);
 				bg.antialiasing = ClientPrefs.globalAntialiasing;
 				bg.screenCenter();
