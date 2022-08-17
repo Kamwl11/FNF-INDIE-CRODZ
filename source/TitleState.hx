@@ -4,6 +4,7 @@ package;
 import Discord.DiscordClient;
 import sys.thread.Thread;
 #end
+import flash.display.BlendMode;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -57,11 +58,15 @@ class TitleState extends MusicBeatState
 
 	public static var initialized:Bool = false;
 
+        var vidSpr:FlxSprite;
+        var videoDone:Bool = false;
+        var blackOverlay:FlxSprite;
 	var blackScreen:FlxSprite;
 	var credGroup:FlxGroup;
 	var credTextShit:Alphabet;
 	var textGroup:FlxGroup;
 	var ngSpr:FlxSprite;
+        var resizeConstant:Float = 1.196;
 
 	var curWacky:Array<String> = [];
 
@@ -284,6 +289,7 @@ class TitleState extends MusicBeatState
 		cup.antialiasing = ClientPrefs.globalAntialiasing;
 		cup.animation.addByPrefix('wtf', 'c', 24, true);
 		cup.animation.play('wtt');
+                cupCircle.blend = BlendMode.ADD;
 		cup.updateHitbox();
 		cup.angle = 0;
 		FlxTween.tween(cup, { angle:360}, 4, {type: FlxTween.LOOPING});
